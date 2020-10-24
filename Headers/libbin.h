@@ -1,0 +1,8 @@
+#ifndef LIBBIN_H
+#define LIBBIN_H
+
+#define BCHECK64 0x8000000000000000
+#define BCHECK32 0x80000000
+#define BCHECK8 0x80
+
+#endif

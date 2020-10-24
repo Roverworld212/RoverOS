@@ -1,0 +1,184 @@
+================================MULTIBOOT STRUCT================================
+Header size: 0x1261b8
+--Load Base Address--
+Base: 0x100000
+--Command Line--
+None
+--Boot Loader--
+GRUB 2.04-1ubuntu26.4
+--APM--
+Version: 0x102
+Cseg: 0xf000
+CsegLen: 0xfff0
+Cseg16: 0xf000
+Cseg16Len: 0xfff0
+Dseg: 0xf000
+DsegLen: 0xfff0
+Offset: 0xd1ac
+Flags: 00000000000000000000000000000110
+--Module--
+Mod at: 0x127000 - 0x12720d
+Cmdline: 0x0
+--Mem Map--
+Base: 0x0
+Len: 0x09fc00
+Avalible
+========
+Base: 0x9fc00
+Len: 0x0400
+Reserved
+========
+Base: 0xf0000
+Len: 0x010000
+Reserved
+========
+Base: 0x100000
+Len: 0x07ee0000
+Avalible
+========
+Base: 0x7fe0000
+Len: 0x020000
+Reserved
+========
+Base: 0xfffc0000
+Len: 0x040000
+Reserved
+========
+--Meminfo Basic--
+Memlower: 0x27f
+MemUpper: 0x1fb80
+--Bootdev--
+Boot device: 0xe0
+--Framebuffer--
+Phys: 0xfd000000
+Pitch: 0xa00
+Width: 0x280
+Height: 0x1e0
+Bpp: 0x20
+Bypp: 0x4
+Palette: 0x810
+Red: 0x8 Blue: 0x0 Green: 0x8
+RedPos: 0x10 RedMask: 0x8
+BluePos: 0x0 BlueMask: 0x8
+GreenPos: 0x8 GreenMask: 0x8
+Using RGB mode
+--ACPI 1.0--
+Root Pointer: 0x126a40
+Check: 0xc9
+OEM: BOCHS 
+Revision: 0x0
+Address: 0x7fe156f
+-Descriptor Table-
+Len: 0x30
+Revision: 0x1
+Check: 0xdd
+OEM: BOCHS 
+OEM TableID: BXPCRSDT
+OEM Revision: 0x1
+CreatorID: 0x43505842
+Creator Revision: 0x1
+Other tables: 0x3
+==FACP Table==
+Len: 0x7450
+Revision: 0x0
+Check: 0x1
+==APIC Table==
+Len: 0x7843
+Revision: 0x0
+Check: 0x1
+OEM ID: 
+OEM Table: 
+OEM Revision: 0x143
+Creator ID: 0x50584200
+Creator Revision: 0x143
+Lapic Addr: 0xe0000000
+Flags: 00000000000000000000000111111110
+==HPET Table==
+Len: 0x38
+Revision: 0x1
+Check: 0x3
+OEM ID:
+OEM Table: 
+Creator ID: 0x1
+Creator Revision: 0x43505842
+PCI ID: 0x1
+Legacy Replacment IRQ Routing Capable: false
+Count Cap: false
+Number of comparators: 0x0
+Hardware Revision ID: 0x0
+Base: 0x8086a201
+HPET Number: 0x0
+Main Counter Minimum: 0x0
+Page Protection Flags: 00000000
+================================================================================
+==========RAMDISK==========
+Ramdisk loaded at: 0x127000
+===========================
+======Initilizing the mouse======
+Loading Mouse
+Sent reset command
+Mouse acknowledged command
+Got MouseID: 0x7feb8
+Setting up interrupts
+Using mouse default settings
+Setup mouse
+=================================
+---CPUID---
+VENDOR: AuthenticAMD - HID: 0x16362509
+--Features--
+Debug Extensions
+Machine Check Exception
+CX8
+SYSCALL & SYSRET
+Machine Check Architecture
+CMOV & FCMOV
+Page Attribute Table
+36 Bit Page Size Extensions
+Reserved
+Multiprocessor Capable
+Reserved
+Extended MMX
+MMX
+FXSR
+SSE
+Gigibyte pages
+RDTSCP
+Long Mode 64 Bit
+Extended 3DNow
+Reserved
+Extended 3DNow
+Reserved
+-----------
+setupGDT[i]: Setting up the GDT
+setupGDT[i]: Limit: 0x101ee1
+setupGDT[i]: Base: 0x101ee1
+setupGDT[i]: Setting Gates
+setupGDT[i]: Set NULL segment
+setupGDT[i]: Set Code segment
+setupGDT[i]: Set Data segment
+setupGDT[i]: Set User segment
+setupGDT[i]: Loaded GDT
+setupIDT[i]: Setting up IDT
+setupIDT[i]: Limit: 0x102127
+setupIDT[i]: Base: 0x102127
+setupIDT[i]: Clearing entries
+setupIDT[i]: Remapping IDT
+setupIDT[i]: Setting Gates
+setupIDT[i]: Set Gates
+setupIDT[i]: Loaded IDT
+setupInt[i]: Setting up Interrupts
+setupInt[i]: Loading fault handlers
+setupInt[i]: Loading other handlers
+setupInt[i]: PIT - Freq: 0x7485 Div: 0x85 L: 0x74 H: 0x0
+setupInt[i]: Loaded PIT
+setupInt[i]: Finished Setting up Interrupts
+ldPaging[i]: Enabling Paging (Thanks u/Mai_Lapyst &  u/devjustinian)
+setupFrames[i]: Memsz: 0xfffc0000
+setupFrames[i]: idxam: 0x7ffe
+setupFrames[i]: Frames: 0xfffc0
+ldPaging[i]: Kdir at: 0x107cdf
+ldPaging[i]: Loaded at 0x107cdf
+ldPaging[i]: End: 0x107cdf
+ldPaging[i]: Mapping with offset: 0x107cdf
+ldPaging[i]: Mapped kernel
+setupComms[i]: Loading Kernel comms 0x3e8
