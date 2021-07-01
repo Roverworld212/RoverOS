@@ -1,78 +1,72 @@
 CC = gcc
-CFLAGS = -w -m32 -c -g -ffreestanding -Wall -I ./Headers
+CFLAGS = -Wno-implicit-function-declaration -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -Werror -ffreestanding -ggdb -fno-pie -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c
 AS = nasm
-ASFLAGS = -g -Fdwarf -felf
+INCLUDE = -I./Headers -I./Headers/fs -I./Headers/kernel -I./Headers/std
+ASFLAGS = -g -Fdwarf -felf64
 OBJDIR = ./Compiled/
+LD = ld
+LDFLAGS = -m elf_x86_64 -nostdlib -T linker.ld
+RAMDISK_FLAGS = -f -d
 
 #Sources
-CORE_SRC = $(wildcard ./Kernel/Core/*.c)
-LIBS_SRC = $(wildcard ./Libs/*.c)
+BOOTSTRAP_SRC = $(wildcard ./Bootstrap/*.asm)
 KERNEL_SRC = $(wildcard ./Kernel/*.c)
-MISC_SRC = $(wildcard ./Kernel/Misc/*.c)
+KERNEL_ASM_SRC = $(wildcard ./Kernel/*.asm)
+LIBRARIES_SRC = $(wildcard ./Libs/*.c)
 
 #Output
-CORE_OUT = $(CORE_SRC:.c=.o)
-LIBS_OUT = $(LIBS_SRC:.c=.o)
+BOOTSTRAP_OUT = $(BOOTSTRAP_SRC:.asm=.o)
 KERNEL_OUT = $(KERNEL_SRC:.c=.o)
-MISC_OUT = $(MISC_SRC:.c=.o)
+KERNEL_ASM_OUT = $(KERNEL_ASM_SRC:.asm=.o)
+LIBRARIES_OUT = $(LIBRARIES_SRC:.c=.o)
 
-#Never touch these!
+%.o: $(notdir %.asm)
+	${AS} ${ASFLAGS} ./$< -o $(addsuffix _nasm.o, $@)
 
-.o:%.c;
+%.o: $(notdir %.c)
+	${CC} ${CFLAGS} ${INCLUDE} ./$< -o $(addsuffix _kernel.o, $@)
 
 all: compile
-	qemu-system-x86_64 -no-reboot -d guest_errors,int -cdrom ./rOS.iso -serial file:Out.log -monitor stdio
-	rm -f ./*.o --preserve-root
-	rm -f ./Compilied/*.o --preserve-root
-	rm -f ./Kernel/*.o --preserve-root
-	rm -f ./Kernel/Core/*.o --preserve-root
-	rm -f ./Kernel/Misc/*.o --preserve-root
-	rm -f ./Libs/*.o --preserve-root
+	qemu-system-x86_64 -d cpu_reset -D ./qdlog.log -cdrom ./rOS.iso -serial file:Out.log -monitor stdio
 
 gdb: compile
-	qemu-system-x86_64 -no-reboot -d guest_errors,int -cdrom ./rOS.iso -s -S -serial file:Out.log -monitor stdio
-	rm -f ./*.o --preserve-root
-	rm -f ./Compilied/*.o --preserve-root
-	rm -f ./Kernel/*.o --preserve-root
-	rm -f ./Kernel/Core/*.o --preserve-root
-	rm -f ./Kernel/Misc/*.o --preserve-root
-	rm -f ./Libs/*.o --preserve-root
+	qemu-system-x86_64 -d cpu_reset -D ./qdlog.log -cdrom ./rOS.iso -s -S -monitor stdio -serial file:Out.log
 
-update-cfg:
-	cp ./grub.cfg ./isodir/boot/grub/grub.cfg
-	@echo "Updated"
+bochs: compile
+	bochs -f .bochsrc -q
 
-sym:
-	@echo "Getting symbols"
-	ld -m elf_i386 -T linker.ld ${OBJDIR}*.o -o ./rOS.o -nostdlib
-	objcopy --only-keep-debug ./rOS.o ./Sym/roveros.sym
-
-
-link:
-	@echo "Linking Kernel"
-	ld -m elf_i386 -T linker.ld ${OBJDIR}*.o -o rOS.bin -nostdlib
-	@echo "Generating ISO"
-	grub-file --is-x86-multiboot2 rOS.bin
+compile: $(BOOTSTRAP_OUT) mov
+	${LD} ${LDFLAGS} ${OBJDIR}*.o -o ${OBJDIR}rOS.bin
+	${LD} ${LDFLAGS} ${OBJDIR}*.o -o ${OBJDIR}rOS.o
+	objcopy --only-keep-debug ${OBJDIR}rOS.o ./Sym/rOS.sym
 	mkdir -p ./isodir/boot/grub
-	cp ./rOS.bin ./isodir/boot/rOS.bin
+	cp ${OBJDIR}rOS.bin ./isodir/boot/rOS.bin
 	cp ./grub.cfg ./isodir/boot/grub/grub.cfg
 	grub-mkrescue -o ./rOS.iso ./isodir
+	rm -f ./*.o --preserve-root
+	rm -f ${OBJDIR}*.o --preserve-root
 
-boot:
-	@echo "Generating ramdisk"
-	gcc ./ramdisk/ramdisk.c -o ./ramdisk/ramdisk.o -I ./Headers
-	chmod +x ./ramdisk/ramdisk.o
-	./ramdisk/ramdisk.o
-	mv ./ramdisk/disk.initrd ./isodir/boot
-	@echo "Created ramdisk"
-	${AS} ${ASFLAGS} ./Kernel/Boot/boot.asm -o ${OBJDIR}boot.o -I ./Headers
-	${AS} ${ASFLAGS} ./Kernel/Boot/idt.asm -o ${OBJDIR}idtb.o -I ./Headers
-	${AS} ${ASFLAGS} ./Kernel/Boot/general.asm -o ${OBJDIR}genb.o -I ./Headers
-
-compile: boot $(KERNEL_OUT) $(CORE_OUT) $(LIBS_OUT) $(MISC_OUT) mov sym link
+clean:
+	rm -f ./*.o --preserve-root
+	rm -f ${OBJDIR}*.o --preserve-root
+	rm -f ./Bootstrap/*.o --preserve-root
+	rm -f ./Kernel/*.o --preserve-root
+	rm -f ./Libs/*.o --preserve-root
+	rm -f ./ramdisk/*.o --preserve-root
 
 mov:
-	mv --force ./Kernel/*.o ${OBJDIR}
-	mv --force ./Kernel/Core/*.o ${OBJDIR}
-	mv --force ./Libs/*.o ${OBJDIR}
-	mv --force ./Kernel/Misc/*.o ${OBJDIR}
+	mv --force ./Bootstrap/*.o ${OBJDIR}
+
+ramdisk:
+	${CC} -ggdb ./ramdisk/ramdisk.c -o ./ramdisk/ramdisk.o -I./Headers/fs -I./Headers
+	objcopy --only-keep-debug ./ramdisk/ramdisk.o ./ramdisk/ramdisk.sym
+	./ramdisk/ramdisk.o ${RAMDISK_FLAGS}
+	rm -f ./ramdisk/ramdisk.o
+
+testinc:
+	${AS} -felf64 ./testasm.asm -o ./testasm.o
+	hexdump ./testasm.o
+	objdump -d --disassembler-options=intel-mnemonic testasm.o
+	rm -f ./testasm.o
+
+.PHONY: clean mov ramdisk
