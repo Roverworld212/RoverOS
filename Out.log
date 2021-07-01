@@ -1,8 +1,27 @@
 asm[I]: Bootstrap loaded
+asm[I]: Reading multiboot tags
+asm[I]: Reading VBE tag
+asm[I]: Finished reading tags
 asm[I]: Loading GDT32
+asm[I]: Loaded GDT32
 asm[I]: Loading pml4e
+asm[I]: Loaded pml4e
 asm[I]: Set CR3
 asm[I]: Set PAE
 asm[I]: Set LME
 asm[I]: Set CR0
-asm[I]: Loaded pml4e
+asm[I]: Loading GDT64
+asm[I]: Loaded GDT64
+asm[I]: Entered long mode (x86_64/64 bit)
+asm[I]: Loading kstack into rsp
+asm[I]: Jumping to kmain
+kmain[I]: Entered kmain
+read_mstruct[I]: Reading mstruct values
+read_mstruct[I]: Located at 0x0000000000104000
+===VBE===
+Buffer: 0x00000000fd000000
+Pitch: 0x0000000000001e00
+Width: 0x0000000000000780
+Height: 0x0000000000000120
+Bpp: 0x00000000
+Type: 0x00000000

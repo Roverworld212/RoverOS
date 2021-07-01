@@ -62,6 +62,7 @@ mov gs, ax
 mov ss, ax
 jmp gdt32.segment_code:.igdt
 .igdt:
+debug GDT32_LOADED, COM_INFO_ASM
 ret
 
 [GLOBAL asm_ldgdt64]
@@ -75,16 +76,18 @@ lgdt [gdt64.pointer]
 jmp gdt64.segment_code:mode64
 
 [BITS 64]
+[EXTERN kmain]
 
 mode64:
+debug64 GDT64_LOADED, COM_INFO_ASM
 debug64 MODE64_LOADED, COM_INFO_ASM
 debug64 KSTACKDB, COM_INFO_ASM
 mov rsp, kstack ;Load kernel stack
 mov rdi, rsi ;Arg 1 (Pointer to list of multiboot tag pointers
 mov rsi, 0x0
 debug64 KJUMP, COM_INFO_ASM
-;lea rbx, [rel kmain]
-;jmp rbx ;Jump to kmain() in C
+lea rbx, [rel kmain]
+jmp rbx ;Jump to kmain() in C
 jmp $
 
 [GLOBAL init_gdt64]
@@ -102,7 +105,7 @@ ret
 
 section .rodata
 
-MODE64_LOADED db "x64 loaded", 0
+MODE64_LOADED db "Entered long mode (x86_64/64 bit)", 0
 KJUMP db "Jumping to kmain", 0
 KSTACKDB db "Loading kstack into rsp", 0
 

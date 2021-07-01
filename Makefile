@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wno-implicit-function-declaration -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -Werror -ffreestanding -ggdb -fno-pie -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c
 AS = nasm
-INCLUDE = -I./Headers -I./Headers/fs -I./Headers/kernel -I./Headers/std
+INCLUDE = -I./Headers -I./Headers/FS -I./Headers/Kernel -I./Headers/std -I./Headers/Lib
 ASFLAGS = -g -Fdwarf -felf64
 OBJDIR = ./Compiled/
 LD = ld
@@ -35,7 +35,7 @@ gdb: compile
 bochs: compile
 	bochs -f .bochsrc -q
 
-compile: $(BOOTSTRAP_OUT) mov
+compile: $(BOOTSTRAP_OUT) $(KERNEL_OUT) $(KERNEL_ASM_OUT) $(LIBRARIES_OUT) mov
 	${LD} ${LDFLAGS} ${OBJDIR}*.o -o ${OBJDIR}rOS.bin
 	${LD} ${LDFLAGS} ${OBJDIR}*.o -o ${OBJDIR}rOS.o
 	objcopy --only-keep-debug ${OBJDIR}rOS.o ./Sym/rOS.sym
@@ -56,6 +56,8 @@ clean:
 
 mov:
 	mv --force ./Bootstrap/*.o ${OBJDIR}
+	mv --force ./Kernel/*.o ${OBJDIR}
+	mv --force ./Libs/*.o ${OBJDIR}
 
 ramdisk:
 	${CC} -ggdb ./ramdisk/ramdisk.c -o ./ramdisk/ramdisk.o -I./Headers/fs -I./Headers

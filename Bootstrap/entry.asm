@@ -25,7 +25,9 @@ mtag_end:
 [GLOBAL bootstrap_start]
 [EXTERN start_com_asm]
 [EXTERN asm_ldgdt32]
+[EXTERN asm_ldgdt64]
 [EXTERN asm_ldpaging]
+[EXTERN read_multiboot]
 
 %include "./Bootstrap/base_header.inc"
 
@@ -36,12 +38,30 @@ bootstrap_start:
 ;EBX has the pointer to the tag start
 call start_com_asm
 debug BOOTSTRAP_LOADED, COM_INFO_ASM
+;Check for long mode
 push eax
 push ebx
+mov eax, 0x80000001
+cpuid
+and edx, 0x8
+cmp edx, 0x0
+je .no_lm
+pop ebx
+pop eax 
+call read_multiboot
+push esi
 call asm_ldgdt32
 call asm_ldpaging
-jmp $
+pop esi
+call asm_ldgdt64
+jmp .lp
+.no_lm:
+debug NO_LME, COM_INFO_ASM
+.lp:
+hlt
+jmp .lp
 
 section .rodata
 
 BOOTSTRAP_LOADED db "Bootstrap loaded", 0
+NO_LME db "This CPU does not support long mode, the OS cannot continue", 0
