@@ -29,16 +29,6 @@ mtag_end:
 
 %include "./Bootstrap/base_header.inc"
 
-%macro debug 0-2
-    push esi
-    push edi
-    mov esi, %1
-    mov edi, %2
-    call write_debug
-    pop esi
-    pop edi
-%endmacro
-
 section .text
 
 bootstrap_start:
