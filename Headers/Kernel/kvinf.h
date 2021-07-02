@@ -4,6 +4,7 @@
 #include "types.h"
 
 struct kvcpuid{
+    char brand[12];
 };
 
 struct kvvideo{

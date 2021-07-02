@@ -12,8 +12,29 @@ dd MAGIC
 dd ARCH
 dd HEADER_LEN
 dd CHECK
-;VBE
+;VBE tag
 dw 5
+align 8
+;ACPI 2 tag
+dw 15
+align 8
+;Network info
+dw 16
+align 8
+;Mboot Console
+dw 4
+align 8
+;APM
+dw 10
+align 8
+;EFI32
+dw 11
+align 8
+;SMBIOS
+dw 13
+align 8
+;Base Load
+dw 21
 align 8
 ;Terminating tag
 dw 0

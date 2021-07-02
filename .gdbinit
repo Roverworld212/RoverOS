@@ -9,7 +9,10 @@ end
 define var
 p $arg0
 end
-break bootstrap_start
+define pk
+x/gx $cr3
+x/gx $rdi
+end
 layout asm
 l
 set pagination off

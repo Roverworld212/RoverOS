@@ -10,14 +10,14 @@ RAMDISK_FLAGS = -f -d
 
 #Sources
 BOOTSTRAP_SRC = $(wildcard ./Bootstrap/*.asm)
+KNASM_SRC = $(wildcard ./Kernel/Assembly/*.asm)
 KERNEL_SRC = $(wildcard ./Kernel/*.c)
-KERNEL_ASM_SRC = $(wildcard ./Kernel/*.asm)
 LIBRARIES_SRC = $(wildcard ./Libs/*.c)
 
 #Output
 BOOTSTRAP_OUT = $(BOOTSTRAP_SRC:.asm=.o)
+KNASM_OUT = $(KNASM_SRC:.asm=.o)
 KERNEL_OUT = $(KERNEL_SRC:.c=.o)
-KERNEL_ASM_OUT = $(KERNEL_ASM_SRC:.asm=.o)
 LIBRARIES_OUT = $(LIBRARIES_SRC:.c=.o)
 
 %.o: $(notdir %.asm)
@@ -35,7 +35,7 @@ gdb: compile
 bochs: compile
 	bochs -f .bochsrc -q
 
-compile: $(BOOTSTRAP_OUT) $(KERNEL_OUT) $(KERNEL_ASM_OUT) $(LIBRARIES_OUT) mov
+compile: $(BOOTSTRAP_OUT) $(KERNEL_OUT) $(KNASM_OUT) $(LIBRARIES_OUT) mov
 	${LD} ${LDFLAGS} ${OBJDIR}*.o -o ${OBJDIR}rOS.bin
 	${LD} ${LDFLAGS} ${OBJDIR}*.o -o ${OBJDIR}rOS.o
 	objcopy --only-keep-debug ${OBJDIR}rOS.o ./Sym/rOS.sym
@@ -57,6 +57,7 @@ clean:
 mov:
 	mv --force ./Bootstrap/*.o ${OBJDIR}
 	mv --force ./Kernel/*.o ${OBJDIR}
+	mv --force ./Kernel/Assembly/*.o ${OBJDIR}
 	mv --force ./Libs/*.o ${OBJDIR}
 
 ramdisk:

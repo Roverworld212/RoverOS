@@ -334,23 +334,27 @@ struct mstruct{
   struct{
     uint32 base;
   }lba;
-  //smbios
-  uint8 major;
-  uint8 minor;
-  uint16 reserved[3];
-  //efi32
-  uint32 pointer;
-  //apm
-  uint16 version;
-  uint16 cseg;
-  uint32 offset;
-  uint16 cseg16;
-  uint16 desg;
-  uint16 flags;
-  uint16 cseglen;
-  uint16 dseglen;
-  //Network
-  uint8 dhc;
+  struct{
+    uint8 major;
+    uint8 minor;
+    uint16 reserved[3];
+  }smbios;
+  struct{
+    uint32 pointer;
+  }efi32;
+  struct{
+    uint16 version;
+    uint16 cseg;
+    uint32 offset;
+    uint16 cseg16;
+    uint16 desg;
+    uint16 flags;
+    uint16 cseglen;
+    uint16 dseglen;
+  }apm;
+  struct{
+    uint8 dhc;
+  }network;
 }__attribute__((packed));
 
 #endif
