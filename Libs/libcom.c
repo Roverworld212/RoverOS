@@ -1,6 +1,7 @@
 #include "libstd.h"
 #include "libcom.h"
 #include "libarg.h"
+#include "kvinf.h"
 
 void start_com(uint64 com){
     outb(com+1, 0x0); //cli
@@ -103,6 +104,9 @@ void printq(const char *format, ...){
                 qwrite(va_arg(args, char*));
                 qwrite("[");
                 send((uint8)va_arg(args, int), COM1, caps);
+                if(kvinf.kernel.timelog){
+                    printq("]", kvinf.kernel.hour, kvinf.kernel.minute, kvinf.kernel.second);
+                }
                 qwrite("]: ");
                 break;
             }

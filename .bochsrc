@@ -1,0 +1,11 @@
+megs: 30
+ata0-master: type=cdrom, path=./rOS.iso, status=inserted
+log: debug.log
+boot: cdrom
+magic_break: enabled=1
+display_library: sdl2, options="gui_debug"
+vga: extension=vbe, update_freq=5, realtime=1
+cpu: reset_on_triple_fault=1
+cpuid: level=6, x86_64=1
+magic_break: enabled=1
+panic: action=ask

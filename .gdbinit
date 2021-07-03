@@ -13,7 +13,10 @@ define pk
 x/gx $cr3
 x/gx $rdi
 end
+break kmain
+break CPUIDint
+break readCpuid
+break cpuidRet
 layout asm
-l
 set pagination off
 continue

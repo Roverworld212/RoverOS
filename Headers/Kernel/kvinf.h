@@ -32,7 +32,10 @@ struct kvmem{
 };
 
 struct kvkernel{
-
+    bool timelog;
+    uint32 second;
+    uint32 minute;
+    uint32 hour;
 };
 
 struct kvmultiboot{

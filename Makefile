@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wno-implicit-function-declaration -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -Werror -ffreestanding -ggdb -fno-pie -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c
+CFLAGS = -Wno-implicit-function-declaration -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -O0 -Werror -ffreestanding -ggdb -fno-pie -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c
 AS = nasm
 INCLUDE = -I./Headers -I./Headers/FS -I./Headers/Kernel -I./Headers/std -I./Headers/Lib
 ASFLAGS = -g -Fdwarf -felf64
@@ -33,6 +33,7 @@ gdb: compile
 	qemu-system-x86_64 -d cpu_reset -D ./qdlog.log -cdrom ./rOS.iso -s -S -monitor stdio -serial file:Out.log
 
 bochs: compile
+	rm -f ./debug.log --preserve-root
 	bochs -f .bochsrc -q
 
 compile: $(BOOTSTRAP_OUT) $(KERNEL_OUT) $(KNASM_OUT) $(LIBRARIES_OUT) mov
