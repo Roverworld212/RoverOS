@@ -1,5 +1,5 @@
 # What is RoverOS?
-RoverOS is my custom OS and kernel
+RoverOS is my custom OS and kernel. This version is 32 bit, the x64 version will be pushed here when it is stable
 
 # How do i compile from source?
 cd to the RoverOS directory and run make
