@@ -2,6 +2,8 @@
 #define KVINF_H
 
 #include "types.h"
+#include "libtask.h"
+#include "multiboot.h"
 
 struct kvcpuid{
     char brand[12];
@@ -16,30 +18,39 @@ struct kvvideo{
 };
 
 struct kvio{
-
+    bool debug;
 };
 
 struct kvfs{
-
+    uint64 *vfs;
 };
 
 struct kvacpi{
-
+    uint64 *table;
 };
 
 struct kvmem{
-
+    uint64 total;
 };
 
 struct kvkernel{
     bool timelog;
+    uint16 tick; //Reset after each new second
     uint32 second;
     uint32 minute;
     uint32 hour;
+    struct mstruct *multiboot;
 };
 
-struct kvmultiboot{
+struct kvtask{
+    struct task *currentTask;
+};
 
+struct kvaudio{
+    //PC Speaker
+    bool state; //0-out 1-in
+    //SB16
+    //Intel HD
 };
 
 struct kvinfS{
@@ -49,7 +60,7 @@ struct kvinfS{
     struct kvfs fs; //For Filesystem info
     struct kvacpi acpi; //For ACPI related info
     struct kvmem memory; //For memory related info
-    struct kvmultiboot multiboot; //For multiboot related info
+    struct kvtask task;
     struct kvkernel kernel; //For kernel info
 };
 

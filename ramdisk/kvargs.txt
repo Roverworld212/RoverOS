@@ -1,0 +1,15 @@
+{
+    SYNTAX
+    {} Defines a comment, they will be ignored and will not be added to the ramdisk
+    ; defines end of current statment
+    () defines arg
+    <> defines a no parse statment, anything between will not be parsed (Must be in a comment)
+    <#> defines terminator, all data past the terminator will be ignored and will not be written to the ramdisk
+    Examples:
+    {My statment <Don't Parse#>}
+    -my-statment(my-args);
+    myStatment(MyArgs);
+    my statment(my args);
+    myStatment(my)(args);
+}
+#

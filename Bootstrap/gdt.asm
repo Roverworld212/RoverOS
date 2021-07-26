@@ -86,6 +86,7 @@ mov rsp, kstack ;Load kernel stack
 mov rdi, rsi ;Arg 1 (Pointer to list of multiboot tag pointers
 mov rsi, 0x0
 debug64 KJUMP, COM_INFO_ASM
+xchg bx, bx
 lea rbx, [rel kmain]
 jmp rbx ;Jump to kmain() in C
 jmp $
@@ -110,6 +111,7 @@ KJUMP db "Jumping to kmain", 0
 KSTACKDB db "Loading kstack into rsp", 0
 
 section .bss
+
 kstack_end:
-resb 0x1000
+resq 64
 kstack:

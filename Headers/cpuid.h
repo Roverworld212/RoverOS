@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-extern void CPUIDint(uint64);
+extern void cpuidInt(uint64);
 extern void readCpuid();
 
 #endif

@@ -22,48 +22,67 @@
 #define DARK_BLUE 0x00008B
 
 #define VCHAR(a,b,f) (a|(((b<<4)|(f&0x0F))<<8))
-#define GET_PIXELPOS(x, y, cx) (x+(y*cx))
+#define GET_PIXELPOS(x, y, cx) (x+(cx*y))
 #define FONTBIT_SET(b, o) (b&(0x80>>o))
 
 #define GUI_OBJECT 0x84
 #define GUI_TEXT 0x85
 #define GUI_BUTTON 0x86
 
-//Every task with a UI must have a gui to render
 struct gui{
-    uint64 ownerid; //For when multitasking is avalible
-    uint64 *objects; //Pointer to array of pointers for objects
-};
-
-//For basic UI elements
-struct guiObject{
-    uint8 objType;
+    //Window size
     uint32 Xres;
     uint32 Yres;
+    //Window position
     uint32 Xpos;
     uint32 Ypos;
+    //GUI flags
+    uint16 flags;
+    //UI buffer
     uint32 *buffer;
+    //Pointer to array of objects
+    uint64 *objects;
+}__attribute__((packed));
+
+struct text{
+    //Text box size
+    uint32 Xres;
+    uint32 Yres;
+    //Relative pos
+    uint32 Xpos;
+    uint32 Ypos;
+    //Scaling
+    uint32 Xscale;
+    uint32 Yscale;
+    //Formatting
+    uint32 padding; //Spacing between chars
+    uint32 nlPadding; //Spacing between new lines
+    //stdio/printf
+    uint32 lcpX;
+    uint32 lcpY;
+    uint32 fcolor;
+    uint32 bcolor;
+    //Text flags
+    uint16 flags;
+    //Font
+    uint8 *font;
+}__attribute__((packed));
+
+struct image{
+    //Relative pos
+    uint32 Xpos;
+    uint32 Ypos;
+    //Pointer to image
+    uint64 *img;
 };
 
-//For writing text to the screen
-struct guiText{
-    struct guiObject objectData;
-    uint32 textStart;
-    uint32 textEnd;
-    uint32 charSpacing;
-    uint32 textXPadding;
-    uint32 textYPadding;
-    uint64 *font;
-    uint8 *text;
-};
+//Font present
+#define TXT_FONT 1<<0
 
-//For drawing buttons on the screen and allowing the user to click them
-struct guiButton{
-    struct guiObject objectData;
-
-};
-
-extern void plotPixel(struct guiObject *ui, uint32 x, uint32 y, uint32 color);
-extern void fill(struct guiObject *ui, uint32 color);
+extern void plotPixel(uint32 x, uint32 y, uint32 color);
+extern void fill(uint32 color);
+extern void initGui(struct gui *ui, uint32 xres, uint32 yres, uint32 xpos, uint32 ypos, uint32 *buffer);
+extern void plotChar(char ch, uint32 x, uint32 y, uint32 color, struct text *txt);
+extern void printf(const char *format, ...);
 
 #endif

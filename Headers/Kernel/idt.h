@@ -9,6 +9,7 @@ extern void isrHandler(regs r, uint32 ec);
 extern void irqHandler(int interrupt, regs r);
 extern void addInterruptHandler(irh func, int n);
 extern uint32 getErrCode();
+extern void initPit(uint32 freq);
 
 struct idtS{
     uint16 low : 16;

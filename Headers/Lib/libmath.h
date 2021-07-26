@@ -3,6 +3,6 @@
 
 #include "types.h"
 
-extern int Clamp(int in, int min, int max);
+extern int Clamp(uint64 in, uint64 min, uint64 max);
 
 #endif

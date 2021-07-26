@@ -13,10 +13,11 @@ define pk
 x/gx $cr3
 x/gx $rdi
 end
-break kmain
-break CPUIDint
-break readCpuid
-break cpuidRet
+define xg
+x/gx $arg0
+end
+break tfill
 layout asm
+l
 set pagination off
 continue

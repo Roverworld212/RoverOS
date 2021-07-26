@@ -1,6 +1,9 @@
 #ifndef MULTIBOOT_H
 #define MULTIBOOT_H
 
+#include "types.h"
+#include "acpi.h"
+
 #define MBOOT2_MAGIC 0x36d76289
 
 extern void parseCStruct(uint32 *s);
@@ -332,6 +335,14 @@ struct mstruct{
     uint8 type;
   }vesa;
   struct{
+    uint16 mode;
+    uint16 seg;
+    uint16 off;
+    uint16 len;
+    uint64 externalSpecVBlock; //Pointer
+    uint64 externalSpecVMode; //Pointer
+  }vbe;
+  struct{
     uint32 base;
   }lba;
   struct{
@@ -340,8 +351,16 @@ struct mstruct{
     uint16 reserved[3];
   }smbios;
   struct{
+    uint32 esz;
+    uint32 evr;
+    uint32 entries; //Pointer
+  }mmap;
+  struct{
     uint32 pointer;
   }efi32;
+  struct{
+    uint64 pointer;
+  }efi64;
   struct{
     uint16 version;
     uint16 cseg;
@@ -355,6 +374,13 @@ struct mstruct{
   struct{
     uint8 dhc;
   }network;
+  struct{
+    uint32 mods[20];
+  }modules;
+  struct{
+    uint8 new; //0 if old
+    uint32 *address;
+  }acpi;
 }__attribute__((packed));
 
 #endif

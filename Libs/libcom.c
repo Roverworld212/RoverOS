@@ -35,6 +35,13 @@ void qwrite(const char *s){
     }
 }
 
+void qint_placeholder(char n, uint32 com){
+  char str[dCount(n)+1];
+  itoa(n, str, 10);
+  qwrite(&str);
+}
+
+
 void qint_int(int t, const uintptr *v){
     char str[500]; //Fixed sized for now
     switch(t){
@@ -49,16 +56,28 @@ void qint_int(int t, const uintptr *v){
 void qhex_int(int t, bool caps, const uintptr *v){
     uint64 n = (uint64)v;
     int comp = GET_SZBYTES(t);
-    int p;
+    int p = 0;
+    int a;
+    bool leading = true;
+    bool c = false;
     for(; comp >= 0; --comp){
+        c = false;
+        a = 0x0;
         p = (n>>(4*comp)&0xF);
         if(p >= 10){
-            send(p-0xA+'a', COM1, caps);
+            leading = false;
+            c = true;
+            a = p-0xA+'a';
         }
         else{
-            send(p+'0', COM1, false);
+            if(p > 0){leading = false;}
+            c = false;
+            a = p+'0';
         }
+        if(!leading || (!leading && a != '0')){send(a, COM1, c);}
     }
+    //Nothing was printed
+    if(leading){send('0', COM1, false);}
 }
 
 void printq(const char *format, ...){
@@ -95,6 +114,7 @@ void printq(const char *format, ...){
                 qwrite(va_arg(args, char*));
                 default:
                 case 'i':
+                qint_placeholder(va_arg(args, char*), COM1);
                 break;
                 case 'h':
                 cast_type = CAST_CHAR;
@@ -105,7 +125,7 @@ void printq(const char *format, ...){
                 qwrite("[");
                 send((uint8)va_arg(args, int), COM1, caps);
                 if(kvinf.kernel.timelog){
-                    printq("]", kvinf.kernel.hour, kvinf.kernel.minute, kvinf.kernel.second);
+                    printq("][%i.%i.%i", kvinf.kernel.hour, kvinf.kernel.minute, kvinf.kernel.second);
                 }
                 qwrite("]: ");
                 break;

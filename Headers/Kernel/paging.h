@@ -13,7 +13,7 @@
 #define GET_PDE_BASE(d) ((d&PAGE_MASK)>>12)
 #define GET_PDPE_BASE(d) ((d&PAGE_MASK)>>12)
 
-#define ALIGN(addr) ((((uint64)addr)&0xFFFFF000)+0x1000) //Thanks u/devjustinian
+#define ALIGN(addr) ((((uint64)addr)&0xFFFFF000)) //Thanks u/devjustinian
 
 #define SET_PAE(x) (x|(FSET32>>5))
 #define SET_PE(x) (x|FSET32)
@@ -77,5 +77,7 @@ struct addressSpaceS{
     uint64 pde[512] __attribute__((aligned (PAGE_SZ)));
     uint64 pt[512] __attribute__((aligned (PAGE_SZ)));
 }__attribute__((packed));
+
+extern void mapRegion(uint64 start, uint64 end, bool w, bool user, bool nx);
 
 #endif
