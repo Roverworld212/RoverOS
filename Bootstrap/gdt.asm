@@ -83,10 +83,8 @@ debug64 GDT64_LOADED, COM_INFO_ASM
 debug64 MODE64_LOADED, COM_INFO_ASM
 debug64 KSTACKDB, COM_INFO_ASM
 mov rsp, kstack ;Load kernel stack
-mov rdi, rsi ;Arg 1 (Pointer to list of multiboot tag pointers
-mov rsi, 0x0
+mov rdi, rbx
 debug64 KJUMP, COM_INFO_ASM
-xchg bx, bx
 lea rbx, [rel kmain]
 jmp rbx ;Jump to kmain() in C
 jmp $

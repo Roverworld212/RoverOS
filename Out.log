@@ -1,14 +1,4 @@
 asm[I]: Bootstrap loaded
-asm[I]: Reading multiboot tags
-asm[I]: Reading LBA
-asm[I]: Reading APM
-asm[I]: Reading MOD
-asm[I]: Reading Mmap
-asm[I]: Reading BOOT DEVICE
-asm[I]: Reading VBE
-asm[I]: Reading Frame buffer
-asm[I]: Reading ACPI
-asm[I]: Finished reading tags
 asm[I]: Loading GDT32
 asm[I]: Loaded GDT32
 asm[I]: Loading pml4e
@@ -22,40 +12,56 @@ asm[I]: Loaded GDT64
 asm[I]: Entered long mode (x86_64/64 bit)
 asm[I]: Loading kstack into rsp
 asm[I]: Jumping to kmain
-kmain[I][3..3]: Entered kmain
-read_mstruct[I]: Reading mstruct values
-read_mstruct[I]: Located at 0x10A204
-===FBR===
+kmain[I]: Entered kmain
+===============MULTIBOOT===============
+======LBA======
+Base: 0x100000
+======CMD======
+65
+======BLD======
+GRUB 2.04-1ubuntu26.1277
+======APM======
+Version: 0x102
+======MOD======
+Module: ramdisk08
+Located at 0x12B000
+End: 0x12B3EA
+Size: 0x3EA
+======MMAP=====
+Mmap: 0x18-0x0
+======MEM======
+Upper: 0x1FB80
+Lower: 0x27F
+======BDEV=====
+Bios dev: 0xE0
+Slice: 0xFFFFFFFF
+Part: 0xFFFFFFFF
+======VBE======
+Mode: 0xlx
+Seg: 0xFFFF
+Off: 0x6000
+Len: 0x4F
+=====FBUFF=====
 Buffer: 0xFD000000
 Pitch: 0xA00
 Width: 0x280
 Height: 0x1E0
 Bpp: 0x20
 Type: 0x1
-===VBE===
-Mode: 0xFFFF
-Seg: 0x0
-Off: 0x0
-Len: 0x0
-ESVB: 0x0
-ESVM: 0x0
-===MMP===
-Entry size: 0x0
-Entry version: 0x0
-Entries: 0x0
-===LBA===
-Base: 0x10
-===SMB===
-Major: 0x0
-Minor: 0x0
-===EFI===
-Pointer: 0x0
-===APM===
-Version: 0xF000
-Flags: 0xFFF0
-===NET===
-Dhc: 0x0
-=========
+Palette 0x810
+R: 0x8 G: 0x8 B: 0x0
+RedPos: 0x10 Mask: 0x8
+GreenPos: 0x8 Mask: 0x8
+BluePos: 0x0 Mask: 0x8
+======ACPI=====
+Version: Old
+RSDP: 0x12AA80
+===============
+=======================================
+createTask[I]: Creating task structure
+createTask[I]: ui: 0x113820 mxt: 0x1E hooks: 0x0
+createTask[I]: Created task
+swapTask[I]: Switching task
 ld_idt[I]: Loading IDT
 ld_idt[I]: IDT-Size: 0x10
 ld_idt[I]: IDTP-Size: 0xA
@@ -64,34 +70,106 @@ ld_idt[I]: Filled IDT
 ld_idt[I]: Loaded IDT
 ld_paging[I]: Loading new pml4e
 ld_paging[I]: Added page fault handler
-ld_paging[I]: End 0x117040
+ld_paging[I]: End 0x118040
 ld_paging[I]: Mapped kernel
 ld_paging[I]: Set CR3
 mapUI[I]: Mapping UI
 mapUI[I]: Mapped UI
-createTask[I]: Creating task structure
-createTask[I]: ui: 0x112820 mxt: 0x1E hooks: 0x0
-createTask[I]: Created task
-swapTask[I]: Switching task
 initPit[I]: Loading PIT
 initPit[I]: Added PIT handler
 initPit[I]: Freq: 0x28 - Div: 0x7485 - L: 0x85 - H: 0x74
 initPit[I]: Setup pit
-readRamdisk[I]: Assuming ramdisk as first module
-readRamdisk[I]: Ramdisk located at 0x12A000
+readRamdisk[I]: Ramdisk located at 0x12B000
 readRamdisk[I]: Reading segments
 [ID: 0xDE - Start: 0x0 - Size: 0x74]
 [ID: 0xAF - Start: 0x74 - Size: 0x4655]
 [ID: 0xCA - Start: 0x46C9 - Size: 0x14]
 [75.î‚î69 - R--]
+==========ACPI==========
 readACPI[I]: Reading ACPI
-readACPI[I]: Address: 0x0
-readACPI[I]: Signature: î‚î69
-readACPI[I]: Checksum 0x0
-readACPI[I]: OEM: 69
-readACPI[I]: Revision: 0x0
-readACPI[I]: Address: 0xEE000000
-readACPI[I]: Done
+Signature: RSD PTR 
+Check 0xC9
+OEM: BOCHS 
+Revision: 0x0
+Address: 0x7FE156F
+==========FACP==========
+Signature: FACP
+Len: 0x74
+Revision: 0x1
+Check: 0x57
+OEM: BOCHS 
+OEMTable: BXPCFACP
+OEM revision: 0x1
+CreatorID: 0x43505842
+Creator revision: 0x1
+Firmware control: 0x7FE0000
+DSDT: 0x7FE0040
+PPMP: 0x0
+SCI Interrupt: 0x9
+SMI Command port: 0xB2
+ACPI Enable: 0xF1
+ACPI Disable: 0xF0
+S4BIOS: 0x0
+PSTATE: 0x0
+PM1AE: 0x600
+PM1BE: 0x0
+PM1AC: 0x604
+PM1BC: 0x0
+PM2C: 0x0
+PM Timer: 0x608
+GPE0: 0xAFE0
+GPE1: 0x0
+PM1EL: 0x4
+PM1CL: 0x2
+PM Timer len: 0x0
+GPE0L: 0x4
+GPE1L: 0x4
+GPE1B: 0x0
+CState: 0x0
+WC2L: 0xFF00
+WC3L: 0xFF0F
+FSize: 0xF
+FStride: 0x0
+Duty offset: 0x0
+Day alarm: 0x0
+Month alarm: 0x0
+Century: 0x0
+Flags: 0x80A50000
+==========APIC==========
+Signature: APIC
+Len: 0x78
+Revision: 0x1
+Check: 0xED
+OEM: BOCHS 
+OEMTable: BXPCAPIC
+OEM revision: 0x1
+CreatorID: 0x43505842
+Creator revision: 0x1
+Lapic: 0xFEE00000
+Flags: 0x1
+==========HPET==========
+Signature: HPET
+Len: 0x38
+Revision: 0x1
+Check: 0x3
+OEM: BOCHS 
+OEMTable: BXPCHPET
+CreatorID: 0x1
+Creator revision: 0x43505842
+Hardware revision: 0x1
+Comparators: 0x0
+Size: 0x0
+Legacy: 0x0
+PCI: 0x0
+Address space: 0x1
+Bit width: 0xA2
+Bit offset: 0x86
+Access size: 0x80
+Address: 0xFED0000000000000
+HPET Number: 0x0
+Minimum tick: 0x0
+Page protection: 0x0
+========================
 ====CPUID====
 Vendor: AuthenticAMD
 Processor type: OEM
@@ -105,4 +183,38 @@ pmallocInit[I]: Finished initilizing pmalloc
 pmalloc[I]: Alloc request size 0x1 flags 0x0
 pmalloc[I]: Adding new block
 kmain[I]: Alloc returned 0x100100
+initKshell[I]: Loading kshell
+createTask[I]: Creating task structure
+createTask[I]: ui: 0x113820 mxt: 0x14 hooks: 0x1138E0
+createTask[I]: Created task
 kmain[I]: Kernel idling
+Page fault
+===REGISTERS===
+r15: 0x0
+r14: 0x0
+r13: 0x0
+r12: 0x0
+r11: 0x0
+r10: 0x0
+r9:  0x0
+r8:  0x0
+rbp: 0x10B020
+rdi: 0x5
+rsi: 0x1
+rdx: 0x1
+rcx: 0x1
+rbx: 0x0
+rax: 0x8201D9
+rip: 0x104089
+cs:  0x8
+rfl: 0x200002
+rsp: 0x10AFE0
+ss:  0x10
+cr2: 0x8201D9
+--INSTRUCTIONS--
+===============
+Addr: 0x8201D9
+|present|rw|user|reserved-write|decode|
+Flags: -wuz-
+rip: 0x104089
+pml4e[0x0]->pdpe[0x0]->pde[0x4]->pt[0x20]->0x820

@@ -3,6 +3,7 @@
 
 #include "types.h"
 
-extern uint8 baseFont[1016];
+extern uint8 baseFont[1040];
+extern uint16 cursor[8];
 
 #endif

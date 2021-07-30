@@ -11,22 +11,32 @@ struct kvcpuid{
 
 struct kvvideo{
     uint64 physical;
-    uint64 width;
-    uint64 height;
-    uint64 bpp;
-    uint64 pitch;
+    uint32 width;
+    uint32 height;
+    uint32 bpp;
+    uint32 pitch;
 };
 
 struct kvio{
     bool debug;
+    bool caps;
+    bool shift;
 };
 
 struct kvfs{
+    uint64 *ramdisk;
+    uint64 *ramdiskEnd;
     uint64 *vfs;
 };
 
 struct kvacpi{
-    uint64 *table;
+    bool new;
+    uint64 *rdsp;
+    bool switched;
+    struct{
+        bool avalible;
+        bool IRQCapable;
+    }hpet;
 };
 
 struct kvmem{
@@ -39,7 +49,6 @@ struct kvkernel{
     uint32 second;
     uint32 minute;
     uint32 hour;
-    struct mstruct *multiboot;
 };
 
 struct kvtask{

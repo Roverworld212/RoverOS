@@ -18,11 +18,8 @@ void readFile(struct ramdisk_segment *data, struct ramdisk_segment *hd, struct r
 }
 
 void readRamdisk(){
-    //Find valid ramdisk
-    if(kvinf.kernel.multiboot->modules.mods[0] == NULL){printq("%qNo modules found\n", QWARNING); return;}
-    printq("%qAssuming ramdisk as first module\n", QINFO);
-    uint64 rdstart = (uint64)ALIGN(kvinf.kernel.multiboot->modules.mods[0]);
-    uint64 rdend = (uint64)kvinf.kernel.multiboot->modules.mods[1]+rdstart;
+    uint64 rdstart = (uint64)kvinf.fs.ramdisk;
+    uint64 rdend = (uint64)kvinf.fs.ramdiskEnd;
     //Read master header for valid magic
     struct ramdisk_header *master = (struct ramdisk_header*)rdstart;
     if(master->magic != RDMAGIC){printq("%qInvalid master magic 0x%llx\n", QERROR, master->magic); return;}

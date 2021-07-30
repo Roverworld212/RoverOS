@@ -36,6 +36,7 @@ Bit#|Desc
 0   |If set, the data is a keyboard release code
 1   |If set, the data is a character
 2   |If set, the data is from a mouse interrupt
+3   |If set, the data is a shift/caps lock code, the data will be of either
 hook flags
 */
 
@@ -48,5 +49,9 @@ hook flags
 #define runHook(type,flags,idata) hookInt(5,type,flags,0,0,0,idata)
 
 #define KEYBOARD_HOOK 0x1
+#define KBFLAG_RELEASE 1<<0
+#define KBFLAG_CHAR 1<<1
+#define HDFLAG_MOUSE 1<<2
+#define KBFLAG_TOGGLE 1<<3
 
 #endif

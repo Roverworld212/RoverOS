@@ -40,6 +40,7 @@ uint64 hookInt(uint8 mode, uint16 type, uint16 flags, uint16 mask, hookfunc func
             if(t->taskHooks[i].inUse == true && t->taskHooks[i].type == type){
                 data.type = type;
                 data.data = idata;
+                data.flags = flags;
                 if(t->taskHooks[i].flags&0x1){
                     data.type = t->taskHooks[i].mask;
                 }

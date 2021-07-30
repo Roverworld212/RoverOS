@@ -76,11 +76,39 @@ struct image{
     uint64 *img;
 };
 
+struct object{
+    //Relative position
+    uint32 Xpos;
+    uint32 Ypos;
+    //Size
+    uint32 Xres;
+    uint32 Yres;
+    //Flags
+    uint16 flags;
+    //Size in bytes
+    uint32 size;
+    //Object to draw
+    uint8 *draw;
+};
+
+//UI object flags
+//Draw object based on bits
+//First 64 bits must be used for front and back color
+#define OBJ_BIT_DRAW 1<<0
+//Draw object based on bytes
+#define OBJ_BYTE_DRAW 1<<1
+//Use bytes as color bytes
+#define OBJ_COLOR_DRAW 1<<2
+
+//Font flags
 //Font present
 #define TXT_FONT 1<<0
 
-extern void plotPixel(uint32 x, uint32 y, uint32 color);
-extern void fill(uint32 color);
+extern void createGUI(struct gui *ui, uint32 xr, uint32 yr, uint32 xp, uint32 yp, uint16 f, uint64 *objects);
+extern void createText(struct text *txt, uint32 xr, uint32 yr, uint32 xp, uint32 yp, uint32 xs, uint32 ys, uint32 pd, uint32 nlpd, uint32 lcpX, uint32 lcpY, uint32 fc, uint32 bc, uint16 f, uint8 *font);
+extern void createObject(struct object *obj, uint32 xp, uint32 yp, uint32 xr, uint32 yr, uint16 f, uint32 sz, uint8 *draw);
+extern void plotPixel(struct gui *ui, uint32 x, uint32 y, uint32 color);
+extern void fill(struct gui *ui, uint32 color);
 extern void initGui(struct gui *ui, uint32 xres, uint32 yres, uint32 xpos, uint32 ypos, uint32 *buffer);
 extern void plotChar(char ch, uint32 x, uint32 y, uint32 color, struct text *txt);
 extern void printf(const char *format, ...);

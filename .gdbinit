@@ -16,7 +16,7 @@ end
 define xg
 x/gx $arg0
 end
-break tfill
+break readACPI
 layout asm
 l
 set pagination off

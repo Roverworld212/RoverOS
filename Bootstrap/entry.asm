@@ -68,12 +68,14 @@ and edx, 0x8
 cmp edx, 0x0
 je .no_lm
 pop ebx
-pop eax 
-call read_multiboot
+pop eax
+push ebx
+;call read_multiboot
 push esi
 call asm_ldgdt32
 call asm_ldpaging
 pop esi
+pop ebx
 call asm_ldgdt64
 jmp .lp
 .no_lm:

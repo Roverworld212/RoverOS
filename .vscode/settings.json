@@ -4,6 +4,8 @@
         "kvinf.h": "c",
         "cpuid.h": "c",
         "libstd.h": "c",
-        "libmath.h": "c"
+        "libmath.h": "c",
+        "basefont.h": "c",
+        "libarg.h": "c"
     }
 }

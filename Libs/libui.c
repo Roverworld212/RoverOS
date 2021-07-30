@@ -6,15 +6,41 @@
 #include "libtask.h"
 #include "libarg.h"
 
-void initObject(uintptr *obj, uint8 type){
-    switch(type){
-        case GUI_OBJECT:
-        break;
-        case GUI_TEXT:
-        break;
-        case GUI_BUTTON:
-        break;
-    }
+void createGUI(struct gui *ui, uint32 xr, uint32 yr, uint32 xp, uint32 yp, uint16 f, uint64 *objects){
+    ui->Xres = xr;
+    ui->Yres = yr;
+    ui->Xpos = xp;
+    ui->Ypos = yp;
+    ui->flags = f;
+    ui->objects = objects;
+    ui->buffer = (uint32*)kvinf.video.physical+GET_PIXELPOS(xp,yp,kvinf.video.width);
+}
+
+void createText(struct text *txt, uint32 xr, uint32 yr, uint32 xp, uint32 yp, uint32 xs, uint32 ys, uint32 pd, uint32 nlpd, uint32 lcpX, uint32 lcpY, uint32 fc, uint32 bc, uint16 f, uint8 *font){
+    txt->Xres = xr;
+    txt->Yres = yr;
+    txt->Xpos = xp;
+    txt->Ypos = yp;
+    txt->Xscale = xs;
+    txt->Yscale = ys;
+    txt->padding = pd;
+    txt->nlPadding = nlpd;
+    txt->lcpX = lcpX;
+    txt->lcpY = lcpY;
+    txt->fcolor = fc;
+    txt->bcolor = bc;
+    txt->flags = f;
+    if(font == NULL){txt->font = &baseFont;}else{txt->font = font;}
+}
+
+void createObject(struct object *obj, uint32 xp, uint32 yp, uint32 xr, uint32 yr, uint16 f, uint32 sz, uint8 *draw){
+    obj->Xpos = xp;
+    obj->Ypos = yp;
+    obj->Xres = xr;
+    obj->Yres = yr;
+    obj->flags = f;
+    obj->size = sz;
+    obj->draw = draw;
 }
 
 void initGui(struct gui *ui, uint32 xres, uint32 yres, uint32 xpos, uint32 ypos, uint32 *buffer){
@@ -25,21 +51,35 @@ void initGui(struct gui *ui, uint32 xres, uint32 yres, uint32 xpos, uint32 ypos,
     ui->buffer = buffer;
 }
 
-void plotPixel(uint32 x, uint32 y, uint32 color){
-    struct task *t = currentTask();
-    struct gui *ui = t->taskUI;
+void plotPixel(struct gui *ui, uint32 x, uint32 y, uint32 color){
     uint32 pos = GET_PIXELPOS(Clamp(x, ui->Xpos, ui->Xres-1), Clamp(y, ui->Ypos, ui->Yres-1), ui->Xres);
     ui->buffer[pos] = color;
 }
 
-void fill(uint32 color){
-    struct task *t = currentTask();
-    struct gui *ui = t->taskUI;
-    uint64 end = GET_PIXELPOS(ui->Xres, ui->Yres-1, ui->Xres);
-    for(uint64 i = 0; i < end; ++i){
+void fill(struct gui *ui, uint32 color){
+    for(uint32 i = 0; i < (ui->Xres*(kvinf.video.bpp/8))*ui->Yres; ++i){
         ui->buffer[i] = color;
     }
     return;
+}
+
+void drawUIObject(struct object *obj){
+    //Only bit drawing is supported
+    struct task *t = currentTask();
+    uint32 xp = obj->Xpos+t->taskUI->Xpos;
+    uint32 yp = obj->Ypos+t->taskUI->Ypos;
+    uint32 xoff = 0;
+    uint32 yoff = 0;
+    uint32 fcolor = obj->draw[0];
+    uint32 bcolor = obj->draw[1];
+    if(!(obj->flags&OBJ_BIT_DRAW)){return;}
+    for(uint32 i = 0; i < obj->size; ++i){
+        for(uint32 c = 0; c < 8 && obj->draw[i+2] != NULL; ++c){
+            if(obj->draw[i+2]&0x80>>i){plotPixel(t->taskUI, xp+xoff,yp+yoff,fcolor);}else{plotPixel(t->taskUI,+xoff,yp+yoff,bcolor);}
+            ++xoff;
+            if(xoff > obj->Xres){++yoff; xoff = 0;}
+        }
+    }
 }
 
 void scroll(struct gui *ui, struct text *txt){
@@ -70,7 +110,7 @@ void plotChar(char ch, uint32 x, uint32 y, uint32 color, struct text *txt){
             while(shift <= 7){
                 if(r&0x80>>shift){
                     do{
-                        plotPixel(xp+i+xoff,yp+yoff,color);
+                        plotPixel(ui, xp+i+xoff,yp+yoff,color);
                         ++i;
                     }while(i < txt->Xscale);
                 }
@@ -126,15 +166,15 @@ void pwrite(const char *s, struct text *txt){
 }
 
 void printf(const char *format, ...){
-    struct task *t = currentTask();
-    struct text *txt = t->stdio;
+    struct text *txt = (currentTask()->stdio);
     if(txt == NULL){return;}
     va_list args;
     va_start(args, format);
-    uint16 cast_type = CAST_NORMAL;
+    uint16 cast = CAST_NORMAL;
     bool loop = false;
-    bool caps = false;
+    bool caps = true;
     uint32 presX = txt->lcpX;
+    uint8 u = NULL;
     for(uint64 ch = 0; format[ch] != '\0';){
         if(format[ch] == '%' || loop == true){
             if(!loop){++ch;}
@@ -142,22 +182,25 @@ void printf(const char *format, ...){
             switch(format[ch]){
                 case 'X':
                 caps = true;
+                phex_int(cast,caps,va_arg(args,uintptr*),txt);
+                break;
                 case 'x':
-                phex_int(cast_type, caps, va_arg(args, uintptr*),txt);
                 caps = false;
+                phex_int(cast,caps,va_arg(args,uintptr*),txt);
                 break;
                 case 'l':
                 if(format[ch+1] == 'l'){
                     loop = true;
-                    cast_type = CAST_LLONG;
+                    cast = CAST_LLONG;
                     ++ch;
                     break;
                 }
-                cast_type = CAST_LONG;
+                cast = CAST_LONG;
                 loop = true;
                 break;
                 case 'c':
-                plotChar(va_arg(args, char),txt->lcpX,txt->lcpY,txt->fcolor,txt);
+                u = (uint8)va_arg(args,int);
+                plotChar(u,txt->lcpX,txt->lcpY,txt->fcolor,txt);
                 txt->lcpX+=txt->padding;
                 break;
                 case 's':
@@ -167,7 +210,7 @@ void printf(const char *format, ...){
                 //qint_placeholder(va_arg(args, char*), COM1);
                 break;
                 case 'h':
-                cast_type = CAST_CHAR;
+                cast = CAST_CHAR;
                 loop = true;
                 break;
                 default:

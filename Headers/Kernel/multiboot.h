@@ -71,7 +71,7 @@ struct multibootHeaderTag{
   uint16 type;
   uint16 flags;
   uint32 sz;
-};
+}__attribute__((packed));
 
 struct multibootTagRequest{
   uint16 type;
@@ -321,9 +321,9 @@ struct multibootBaseLoad{
   uint32 baseAddr;
 };
 
-#define NEXT_TAG(a) ((struct multibootTag*)((uint8*)a+((a->sz+7)& ~7)))
-
 //My multiboot.asm struct
+
+extern void readMultiboot(uint64 mbs);
 
 struct mstruct{
   struct{
